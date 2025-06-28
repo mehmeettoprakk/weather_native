@@ -8,6 +8,7 @@ import { weatherService } from '../services/weatherApi';
  */
 export const useWeather = () => {
   const [weatherData, setWeatherData] = useState(null);
+  const [selectedCity, setSelectedCity] = useState(null); // Seçilen şehir bilgisi
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   const [isRefreshing, setIsRefreshing] = useState(false);
@@ -16,7 +17,7 @@ export const useWeather = () => {
   /**
    * Koordinatlara göre hava durumu al
    */
-  const getWeatherByCoords = useCallback(async (lat, lon, isRefresh = false) => {
+  const getWeatherByCoords = useCallback(async (lat, lon, isRefresh = false, cityInfo = null) => {
     if (!lat || !lon) {
       setError('Geçersiz koordinatlar');
       return false;
@@ -32,6 +33,15 @@ export const useWeather = () => {
     try {
       const data = await weatherService.getWeatherByCoords(lat, lon);
       setWeatherData(data);
+      
+      // Eğer şehir bilgisi verilmişse kaydet
+      if (cityInfo) {
+        setSelectedCity(cityInfo);
+      } else {
+        // GPS kullanıldığında seçilen şehir bilgisini temizle
+        setSelectedCity(null);
+      }
+      
       return true;
     } catch (err) {
       const errorMessage = err.message || 'Hava durumu verileri alınamadı';
@@ -62,6 +72,7 @@ export const useWeather = () => {
     try {
       const data = await weatherService.getWeatherByCity(cityName);
       setWeatherData(data);
+      setSelectedCity(null); // Manuel arama için seçilen şehir bilgisini temizle
       return true;
     } catch (err) {
       const errorMessage = err.message || 'Hava durumu verileri alınamadı';
@@ -84,15 +95,18 @@ export const useWeather = () => {
 
     return await getWeatherByCoords(
       weatherData.coord.lat, 
-      weatherData.coord.lon
+      weatherData.coord.lon,
+      true, // isRefresh = true
+      selectedCity // Mevcut seçilen şehir bilgisini koru
     );
-  }, [weatherData, getWeatherByCoords]);
+  }, [weatherData, selectedCity, getWeatherByCoords]);
 
   /**
    * Hava durumu verilerini temizle
    */
   const clearWeather = useCallback(() => {
     setWeatherData(null);
+    setSelectedCity(null);
     setError(null);
   }, []);
 
@@ -106,6 +120,7 @@ export const useWeather = () => {
   return {
     // State
     data: weatherData,
+    selectedCity,
     isLoading: loading,
     error,
     isRefreshing,

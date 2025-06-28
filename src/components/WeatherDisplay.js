@@ -16,12 +16,14 @@ import { StyleSheet } from 'react-native';
  * Hava durumu gösterim component'i
  * @param {Object} props - Component props
  * @param {Object} props.weatherData - Hava durumu verisi
+ * @param {Object} props.selectedCity - Seçilen şehir bilgisi
  * @param {Function} props.onCityPress - Şehir seçimi callback'i
  * @param {boolean} props.isManualLocation - Manuel seçim durumu
  * @returns {JSX.Element} Weather display
  */
 export const WeatherDisplay = ({ 
   weatherData, 
+  selectedCity,
   onCityPress,
   isManualLocation = false 
 }) => {
@@ -45,7 +47,9 @@ export const WeatherDisplay = ({
           style={styles.citySelector}
           onPress={onCityPress}
         >
-          <Text style={styles.cityName}>{weatherData.name}</Text>
+          <Text style={styles.cityName}>
+            {selectedCity ? selectedCity.name : weatherData.name}
+          </Text>
           <Text style={styles.country}>{weatherData.sys.country}</Text>
           {isManualLocation && (
             <Text style={styles.manualLocationText}>Manuel seçim</Text>

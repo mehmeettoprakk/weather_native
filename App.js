@@ -67,6 +67,7 @@ export default function App() {
           ) : weather.data ? (
             <WeatherDisplay
               weatherData={weather.data}
+              selectedCity={weather.selectedCity}
               onCityPress={() => setShowCityModal(true)}
               isManualLocation={weather.isManualLocation}
             />
@@ -80,7 +81,7 @@ export default function App() {
           visible={showCityModal}
           onClose={() => setShowCityModal(false)}
           onCitySelect={async (city) => {
-            await weather.fetchWeatherByCoords(city.lat, city.lon);
+            await weather.fetchWeatherByCoords(city.lat, city.lon, false, city);
             weather.setIsManualLocation(true);
             setShowCityModal(false);
           }}
