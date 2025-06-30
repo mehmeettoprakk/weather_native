@@ -1,5 +1,6 @@
 import axios from 'axios';
 import { API_CONFIG } from '../constants/config';
+import { formatCitySearchResult } from '../utils/countryUtils';
 
 // Axios instance oluştur
 const weatherApiClient = axios.create({
@@ -105,14 +106,18 @@ export const geocodingService = {
    * Şehir arama
    * @param {string} query - Arama terimi
    * @param {number} limit - Sonuç limiti
-   * @returns {Promise<Array>} Şehir listesi
+   * @returns {Promise<Array>} Şehir listesi (formatlanmış)
    */
   async searchCities(query, limit = API_CONFIG.SEARCH_LIMIT) {
     try {
       const response = await geoApiClient.get('/direct', {
         params: { q: query, limit }
       });
-      return response.data;
+      
+      // Arama sonuçlarını daha okunabilir hale getir
+      const formattedResults = response.data.map(formatCitySearchResult);
+      
+      return formattedResults;
     } catch (error) {
       handleApiError(error);
     }

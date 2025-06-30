@@ -20,6 +20,36 @@ import { useWeather } from './src/hooks/useWeather';
 import { useLocation } from './src/hooks/useLocation';
 import { APP_GRADIENTS } from './src/constants/config';
 
+// Hava durumuna göre gradient seçici
+const getWeatherGradient = (weatherData) => {
+  if (!weatherData) return APP_GRADIENTS.defaultWeather;
+  
+  const condition = weatherData.weather[0].main.toLowerCase();
+  const isNight = weatherData.weather[0].icon.includes('n');
+  
+  if (isNight) return APP_GRADIENTS.night;
+  
+  switch (condition) {
+    case 'clear':
+      return APP_GRADIENTS.clearSky;
+    case 'clouds':
+      return APP_GRADIENTS.cloudy;
+    case 'rain':
+    case 'drizzle':
+      return APP_GRADIENTS.rainy;
+    case 'snow':
+      return APP_GRADIENTS.snow;
+    case 'thunderstorm':
+      return APP_GRADIENTS.thunderstorm;
+    case 'mist':
+    case 'fog':
+    case 'haze':
+      return APP_GRADIENTS.mist;
+    default:
+      return APP_GRADIENTS.defaultWeather;
+  }
+};
+
 /**
  * Ana uygulama component'i - Clean Code yapısıyla refactor edildi
  * @returns {JSX.Element} Weather App
@@ -46,7 +76,7 @@ export default function App() {
 
   return (
     <LinearGradient 
-      colors={APP_GRADIENTS.defaultWeather} 
+      colors={getWeatherGradient(weather.data)} 
       style={{ flex: 1 }}
     >
       <SafeAreaView style={{ flex: 1 }}>
@@ -54,7 +84,7 @@ export default function App() {
         
         <ScrollView
           style={{ flex: 1 }}
-          contentContainerStyle={{ flexGrow: 1, padding: 16 }}
+          contentContainerStyle={{ flexGrow: 1, padding: 12 }}
         >
           {weather.isLoading && !weather.data ? (
             <LoadingScreen message="Hava durumu yükleniyor..." />

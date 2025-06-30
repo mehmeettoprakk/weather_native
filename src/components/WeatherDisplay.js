@@ -1,6 +1,7 @@
 import React from 'react';
-import { View, Text, TouchableOpacity } from 'react-native';
+import { View, Text, TouchableOpacity, Animated } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
+import { LinearGradient } from 'expo-linear-gradient';
 import { 
   getWeatherIcon, 
   formatTime, 
@@ -9,7 +10,7 @@ import {
   convertWindSpeed,
   capitalizeDescription 
 } from '../utils/weatherUtils';
-import { COLORS, FONT_SIZES, SPACING, BORDER_RADIUS } from '../constants/config';
+import { COLORS, GLASS_STYLES, APP_GRADIENTS } from '../constants/config';
 import { StyleSheet } from 'react-native';
 
 /**
@@ -41,101 +42,112 @@ export const WeatherDisplay = ({
 
   return (
     <View style={styles.container}>
-      {/* Başlık */}
-      <View style={styles.header}>
+      {/* Modern Başlık Kartı */}
+      <View style={[styles.headerCard, GLASS_STYLES.card]}>
         <TouchableOpacity 
           style={styles.citySelector}
           onPress={onCityPress}
+          activeOpacity={0.8}
         >
-          <Text style={styles.cityName}>
-            {selectedCity ? selectedCity.name : weatherData.name}
-          </Text>
-          <Text style={styles.country}>{weatherData.sys.country}</Text>
-          {isManualLocation && (
-            <Text style={styles.manualLocationText}>Manuel seçim</Text>
-          )}
-          <Ionicons name="chevron-down" size={20} color="#E6F2FF" style={styles.chevronIcon} />
+          <View style={styles.cityInfo}>
+            <Text style={styles.cityName}>
+              {selectedCity ? selectedCity.name : weatherData.name}
+            </Text>
+            <Text style={styles.country}>{weatherData.sys.country}</Text>
+          </View>
+          <Ionicons name="chevron-down" size={24} color="rgba(255,255,255,0.8)" />
         </TouchableOpacity>
       </View>
 
-      {/* Ana hava durumu */}
-      <View style={styles.mainWeather}>
-        <Ionicons
-          name={getWeatherIcon(weatherData.weather[0].icon)}
-          size={100}
-          color={COLORS.white}
-        />
-        <Text style={styles.temperature}>
-          {roundTemperature(weatherData.main.temp)}°C
-        </Text>
-        <Text style={styles.description}>
-          {capitalizeDescription(weatherData.weather[0].description)}
-        </Text>
-        <Text style={styles.feelsLike}>
-          Hissedilen: {roundTemperature(weatherData.main.feels_like)}°C
-        </Text>
-      </View>
-
-      {/* Detaylar */}
-      <View style={styles.detailsContainer}>
-        <View style={styles.detailRow}>
-          <View style={styles.detailItem}>
-            <Ionicons name="thermometer" size={20} color={COLORS.white} />
-            <Text style={styles.detailLabel}>Min/Max</Text>
-            <Text style={styles.detailValue}>
-              {roundTemperature(weatherData.main.temp_min)}° / {roundTemperature(weatherData.main.temp_max)}°
+      {/* Ana Hava Durumu Kartı */}
+      <View style={[styles.mainWeatherCard, GLASS_STYLES.cardStrong]}>
+        <View style={styles.weatherIconContainer}>
+          <LinearGradient
+            colors={['rgba(255,255,255,0.2)', 'rgba(255,255,255,0.05)']}
+            style={styles.iconBackground}
+          >
+            <Ionicons
+              name={getWeatherIcon(weatherData.weather[0].icon)}
+              size={100}
+              color={COLORS.white}
+            />
+          </LinearGradient>
+        </View>
+        
+        <View style={styles.mainWeatherInfo}>
+          <Text style={styles.temperature}>
+            {roundTemperature(weatherData.main.temp)}°
+          </Text>
+          <Text style={styles.description}>
+            {capitalizeDescription(weatherData.weather[0].description)}
+          </Text>
+          <Text style={styles.feelsLike}>
+            Hissedilen {roundTemperature(weatherData.main.feels_like)}°
+          </Text>
+          
+          <View style={styles.tempRange}>
+            <Text style={styles.tempRangeText}>
+              H:{roundTemperature(weatherData.main.temp_max)}° L:{roundTemperature(weatherData.main.temp_min)}°
             </Text>
           </View>
-          <View style={styles.detailItem}>
-            <Ionicons name="water" size={20} color={COLORS.white} />
-            <Text style={styles.detailLabel}>Nem</Text>
+        </View>
+      </View>
+
+      {/* Detay Kartları Grid */}
+      <View style={styles.detailsGrid}>
+        {/* İlk Satır */}
+        <View style={styles.detailRow}>
+          <View style={[styles.detailCard, GLASS_STYLES.card]}>
+            <Ionicons name="water" size={20} color="#64B5F6" />
             <Text style={styles.detailValue}>{weatherData.main.humidity}%</Text>
+            <Text style={styles.detailLabel}>Nem</Text>
+          </View>
+          <View style={[styles.detailCard, GLASS_STYLES.card]}>
+            <Ionicons name="speedometer" size={20} color="#AB47BC" />
+            <Text style={styles.detailValue}>{weatherData.main.pressure}</Text>
+            <Text style={styles.detailLabel}>hPa</Text>
           </View>
         </View>
 
+        {/* İkinci Satır */}
         <View style={styles.detailRow}>
-          <View style={styles.detailItem}>
-            <Ionicons name="speedometer" size={20} color={COLORS.white} />
-            <Text style={styles.detailLabel}>Basınç</Text>
-            <Text style={styles.detailValue}>{weatherData.main.pressure} hPa</Text>
+          <View style={[styles.detailCard, GLASS_STYLES.card]}>
+            <Ionicons name="compass" size={20} color="#26C6DA" />
+            <Text style={styles.detailValue}>
+              {weatherData.wind?.speed ? convertWindSpeed(weatherData.wind.speed) : 'N/A'}
+            </Text>
+            <Text style={styles.detailLabel}>km/h</Text>
           </View>
-          <View style={styles.detailItem}>
-            <Ionicons name="eye" size={20} color={COLORS.white} />
-            <Text style={styles.detailLabel}>Görüş</Text>
+          <View style={[styles.detailCard, GLASS_STYLES.card]}>
+            <Ionicons name="eye" size={20} color="#66BB6A" />
             <Text style={styles.detailValue}>
               {formatVisibility(weatherData.visibility)}
             </Text>
-          </View>
-        </View>
-
-        <View style={styles.detailRow}>
-          <View style={styles.detailItem}>
-            <Ionicons name="compass" size={20} color={COLORS.white} />
-            <Text style={styles.detailLabel}>Rüzgar</Text>
-            <Text style={styles.detailValue}>
-              {weatherData.wind?.speed ? convertWindSpeed(weatherData.wind.speed) + ' km/h' : 'N/A'}
-            </Text>
-          </View>
-          <View style={styles.detailItem}>
-            <Ionicons name="cloud" size={20} color={COLORS.white} />
-            <Text style={styles.detailLabel}>Bulutluluk</Text>
-            <Text style={styles.detailValue}>{weatherData.clouds.all}%</Text>
+            <Text style={styles.detailLabel}>Görüş</Text>
           </View>
         </View>
       </View>
 
-      {/* Güneş durumu */}
-      <View style={styles.sunContainer}>
-        <View style={styles.sunItem}>
-          <Ionicons name="sunny" size={22} color="#FFD700" />
-          <Text style={styles.sunLabel}>Gün Doğumu</Text>
-          <Text style={styles.sunTime}>{formatTime(weatherData.sys.sunrise)}</Text>
-        </View>
-        <View style={styles.sunItem}>
-          <Ionicons name="moon" size={22} color="#FFA500" />
-          <Text style={styles.sunLabel}>Gün Batımı</Text>
-          <Text style={styles.sunTime}>{formatTime(weatherData.sys.sunset)}</Text>
-        </View>
+      {/* Güneş Durumu Kartı */}
+      <View style={[styles.sunContainer, GLASS_STYLES.card]}>
+        <LinearGradient
+          colors={['rgba(255,193,7,0.3)', 'rgba(255,152,0,0.3)']}
+          style={styles.sunGradient}
+        >
+          <View style={styles.sunItem}>
+            <Ionicons name="sunny" size={24} color="#FFD54F" />
+            <Text style={styles.sunTime}>{formatTime(weatherData.sys.sunrise)}</Text>
+            <Text style={styles.sunLabel}>Gün Doğumu</Text>
+          </View>
+          
+          <View style={styles.sunDivider} />
+          
+          <View style={styles.sunItem}>
+            <Ionicons name="moon" size={24} color="#FFAB40" />
+            <Text style={styles.sunTime}>{formatTime(weatherData.sys.sunset)}</Text>
+            <Text style={styles.sunLabel}>Gün Batımı</Text>
+          </View>
+        </LinearGradient>
       </View>
     </View>
   );
@@ -144,121 +156,171 @@ export const WeatherDisplay = ({
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    paddingHorizontal: 4,
   },
-  header: {
-    alignItems: 'center',
-    marginBottom: 20,
+  
+  // Header Card
+  headerCard: {
+    marginBottom: 16,
+    padding: 16,
   },
   citySelector: {
+    flexDirection: 'row',
     alignItems: 'center',
-    paddingVertical: 8,
-    paddingHorizontal: 16,
-    backgroundColor: 'rgba(255, 255, 255, 0.1)',
-    borderRadius: 16,
-    flexDirection: 'column',
+    justifyContent: 'space-between',
+  },
+  cityInfo: {
+    flex: 1,
   },
   cityName: {
-    fontSize: 26,
-    fontWeight: 'bold',
+    fontSize: 24,
+    fontWeight: '700',
     color: COLORS.white,
-    textAlign: 'center',
+    letterSpacing: 0.5,
   },
   country: {
-    fontSize: 16,
-    color: '#E6F2FF',
-    marginTop: 4,
-  },
-  manualLocationText: {
-    fontSize: 10,
-    color: '#B3D9FF',
+    fontSize: 14,
+    color: 'rgba(255, 255, 255, 0.8)',
     marginTop: 2,
+    fontWeight: '500',
   },
-  chevronIcon: {
-    marginTop: 3,
-  },
-  mainWeather: {
+
+  // Main Weather Card
+  mainWeatherCard: {
     alignItems: 'center',
-    marginBottom: 30,
+    padding: 24,
+    marginBottom: 18,
+  },
+  weatherIconContainer: {
+    marginBottom: 16,
+  },
+  iconBackground: {
+    width: 140,
+    height: 140,
+    borderRadius: 70,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  mainWeatherInfo: {
+    alignItems: 'center',
   },
   temperature: {
-    fontSize: 60,
-    fontWeight: '200',
+    fontSize: 64,
+    fontWeight: '100',
     color: COLORS.white,
-    marginVertical: 10,
+    marginBottom: 6,
+    letterSpacing: -2,
   },
   description: {
     fontSize: 18,
-    color: '#E6F2FF',
-    marginBottom: 8,
+    color: 'rgba(255, 255, 255, 0.9)',
+    marginBottom: 10,
+    fontWeight: '500',
+    textTransform: 'capitalize',
   },
   feelsLike: {
-    fontSize: 16,
-    color: '#B3D9FF',
+    fontSize: 15,
+    color: 'rgba(255, 255, 255, 0.7)',
+    marginBottom: 14,
+    fontWeight: '400',
   },
-  detailsContainer: {
-    backgroundColor: 'rgba(255, 255, 255, 0.1)',
-    borderRadius: 14,
-    padding: 14,
+  tempRange: {
+    backgroundColor: 'rgba(255, 255, 255, 0.15)',
+    paddingHorizontal: 18,
+    paddingVertical: 8,
+    borderRadius: 18,
+  },
+  tempRangeText: {
+    fontSize: 15,
+    color: COLORS.white,
+    fontWeight: '600',
+  },
+
+  // Details Grid
+  detailsGrid: {
     marginBottom: 16,
   },
   detailRow: {
     flexDirection: 'row',
     justifyContent: 'space-between',
-    marginBottom: 14,
+    marginBottom: 12,
   },
-  detailItem: {
-    alignItems: 'center',
+  detailCard: {
     flex: 1,
-  },
-  detailLabel: {
-    fontSize: 13,
-    color: '#B3D9FF',
-    marginTop: 6,
-    marginBottom: 3,
+    alignItems: 'center',
+    padding: 14,
+    marginHorizontal: 4,
   },
   detailValue: {
-    fontSize: 15,
+    fontSize: 18,
     color: COLORS.white,
-    fontWeight: '600',
+    fontWeight: '700',
+    marginTop: 8,
+    marginBottom: 2,
   },
+  detailLabel: {
+    fontSize: 10,
+    color: 'rgba(255, 255, 255, 0.7)',
+    fontWeight: '500',
+    textTransform: 'uppercase',
+    letterSpacing: 0.5,
+  },
+
+  // Sun Container
   sunContainer: {
+    overflow: 'hidden',
+  },
+  sunGradient: {
     flexDirection: 'row',
-    justifyContent: 'space-around',
-    backgroundColor: 'rgba(255, 255, 255, 0.1)',
-    borderRadius: 14,
-    padding: 14,
+    alignItems: 'center',
+    paddingVertical: 16,
+    paddingHorizontal: 16,
   },
   sunItem: {
+    flex: 1,
     alignItems: 'center',
   },
-  sunLabel: {
-    fontSize: 13,
-    color: '#B3D9FF',
-    marginTop: 6,
-    marginBottom: 3,
+  sunDivider: {
+    width: 1,
+    height: 32,
+    backgroundColor: 'rgba(255, 255, 255, 0.3)',
+    marginHorizontal: 16,
   },
   sunTime: {
-    fontSize: 15,
+    fontSize: 16,
     color: COLORS.white,
-    fontWeight: '600',
+    fontWeight: '700',
+    marginTop: 6,
+    marginBottom: 2,
   },
+  sunLabel: {
+    fontSize: 10,
+    color: 'rgba(255, 255, 255, 0.8)',
+    fontWeight: '500',
+    textTransform: 'uppercase',
+    letterSpacing: 0.5,
+  },
+
+  // No Data State
   noDataContainer: {
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
+    padding: 32,
   },
   noDataText: {
-    fontSize: 18,
+    fontSize: 20,
     color: COLORS.white,
-    marginTop: 16,
+    marginTop: 24,
     marginBottom: 32,
     textAlign: 'center',
+    fontWeight: '500',
+    lineHeight: 28,
   },
   retryButton: {
-    backgroundColor: 'rgba(255, 255, 255, 0.2)',
+    ...GLASS_STYLES.button,
     paddingHorizontal: 32,
-    paddingVertical: 12,
-    borderRadius: 24,
+    paddingVertical: 16,
   },
   retryButtonText: {
     color: COLORS.white,

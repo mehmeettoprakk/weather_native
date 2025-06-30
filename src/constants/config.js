@@ -39,37 +39,87 @@ export const WEATHER_ICONS = {
   '50n': 'cloudy',
 };
 
-// Renk Paleti
+// Modern Renk Paleti
 export const COLORS = {
-  primary: '#4A90E2',
-  secondary: '#667eea',
+  primary: '#667eea',
+  secondary: '#764ba2',
+  accent: '#FF6B6B',
   background: '#F8F9FA',
   white: '#FFFFFF',
   black: '#1C1C1E',
+  glass: 'rgba(255, 255, 255, 0.15)',
+  glassStrong: 'rgba(255, 255, 255, 0.25)',
+  glassDark: 'rgba(0, 0, 0, 0.1)',
   gray: {
-    light: '#F1F3F4',
-    medium: '#666666',
-    dark: '#333333',
+    light: '#F8F9FA',
+    medium: '#6C757D',
+    dark: '#212529',
   },
   text: {
-    primary: '#1C1C1E',
-    secondary: '#666666',
-    light: '#999999',
+    primary: '#212529',
+    secondary: '#6C757D',
+    light: '#ADB5BD',
     inverse: '#FFFFFF',
   },
   shadow: {
     color: '#000000',
-    opacity: 0.1,
+    opacity: 0.08,
   },
 };
 
-// Gradient Renkleri
+// Modern Gradient Koleksiyonu
 export const APP_GRADIENTS = {
   defaultWeather: ['#667eea', '#764ba2'],
-  sunny: ['#56CCF2', '#2F80ED'],
-  cloudy: ['#bdc3c7', '#2c3e50'],
-  rainy: ['#4facfe', '#00f2fe'],
-  night: ['#0f0c29', '#24243e'],
-  snow: ['#e6ddd4', '#d5dee7'],
-  thunderstorm: ['#141e30', '#243b55'],
+  sunny: ['#FEB692', '#EA5455'],
+  clearSky: ['#74b9ff', '#0984e3'],
+  cloudy: ['#74b9ff', '#636e72'],
+  rainy: ['#00cec9', '#6c5ce7'],
+  night: ['#2d3436', '#636e72'],
+  snow: ['#ddd6f3', '#faaca8'],
+  thunderstorm: ['#2d3436', '#74b9ff'],
+  mist: ['#a8edea', '#fed6e3'],
+  sunrise: ['#ff9a9e', '#fecfef'],
+  sunset: ['#ffecd2', '#fcb69f'],
+  aurora: ['#667eea', '#764ba2', '#ffd89b'],
+  ocean: ['#2E3192', '#1BFFFF'],
+  forest: ['#11998e', '#38ef7d'],
+  desert: ['#f093fb', '#f5576c'],
+  glacier: ['#a8edea', '#fed6e3'],
+};
+
+// Modern Glassmorphism Stili
+export const GLASS_STYLES = {
+  card: {
+    backgroundColor: COLORS.glass,
+    borderRadius: 20,
+    borderWidth: 1,
+    borderColor: 'rgba(255, 255, 255, 0.2)',
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 8 },
+    shadowOpacity: 0.12,
+    shadowRadius: 24,
+    elevation: 8,
+  },
+  cardStrong: {
+    backgroundColor: COLORS.glassStrong,
+    borderRadius: 24,
+    borderWidth: 1.5,
+    borderColor: 'rgba(255, 255, 255, 0.3)',
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 12 },
+    shadowOpacity: 0.15,
+    shadowRadius: 32,
+    elevation: 12,
+  },
+  button: {
+    backgroundColor: COLORS.glass,
+    borderRadius: 16,
+    borderWidth: 1,
+    borderColor: 'rgba(255, 255, 255, 0.2)',
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.08,
+    shadowRadius: 12,
+    elevation: 4,
+  },
 }; 
