@@ -111,90 +111,11 @@ export const formatCitySearchResult = (city) => {
   const countryName = getCountryName(city.country);
   const countryFlag = getCountryFlag(city.country);
   
-  // Konum bilgisini oluştur
-  let locationParts = [];
-  
-  // Eyalet/bölge bilgisi varsa ekle
-  if (city.state && city.state !== city.name) {
-    locationParts.push(city.state);
-  }
-  
-  // Ülke adını ekle
-  locationParts.push(countryName);
-  
-  const locationText = locationParts.join(', ');
-  
   return {
     ...city,
     countryName,
     countryFlag,
-    locationText,
-    displayText: `${city.name}, ${locationText}`,
-    shortLocation: city.state ? `${city.state}, ${city.country}` : city.country,
   };
 };
 
-/**
- * ABD eyaletleri için özel kısaltmalar
- */
-export const US_STATES = {
-  'Alabama': 'AL',
-  'Alaska': 'AK',
-  'Arizona': 'AZ',
-  'Arkansas': 'AR',
-  'California': 'CA',
-  'Colorado': 'CO',
-  'Connecticut': 'CT',
-  'Delaware': 'DE',
-  'Florida': 'FL',
-  'Georgia': 'GA',
-  'Hawaii': 'HI',
-  'Idaho': 'ID',
-  'Illinois': 'IL',
-  'Indiana': 'IN',
-  'Iowa': 'IA',
-  'Kansas': 'KS',
-  'Kentucky': 'KY',
-  'Louisiana': 'LA',
-  'Maine': 'ME',
-  'Maryland': 'MD',
-  'Massachusetts': 'MA',
-  'Michigan': 'MI',
-  'Minnesota': 'MN',
-  'Mississippi': 'MS',
-  'Missouri': 'MO',
-  'Montana': 'MT',
-  'Nebraska': 'NE',
-  'Nevada': 'NV',
-  'New Hampshire': 'NH',
-  'New Jersey': 'NJ',
-  'New Mexico': 'NM',
-  'New York': 'NY',
-  'North Carolina': 'NC',
-  'North Dakota': 'ND',
-  'Ohio': 'OH',
-  'Oklahoma': 'OK',
-  'Oregon': 'OR',
-  'Pennsylvania': 'PA',
-  'Rhode Island': 'RI',
-  'South Carolina': 'SC',
-  'South Dakota': 'SD',
-  'Tennessee': 'TN',
-  'Texas': 'TX',
-  'Utah': 'UT',
-  'Vermont': 'VT',
-  'Virginia': 'VA',
-  'Washington': 'WA',
-  'West Virginia': 'WV',
-  'Wisconsin': 'WI',
-  'Wyoming': 'WY',
-};
-
-/**
- * ABD eyalet adını kısaltmasına çevirir
- * @param {string} stateName - Eyalet adı
- * @returns {string} Eyalet kısaltması veya orijinal ad
- */
-export const getUSStateAbbreviation = (stateName) => {
-  return US_STATES[stateName] || stateName;
-}; 
+ 
